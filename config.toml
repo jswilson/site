@@ -1,0 +1,6 @@
+baseURL = "http://example.org/"
+languageCode = "en-us"
+theme = "lanyon"
+
+[params]
+title = "Jonathan Wilson"

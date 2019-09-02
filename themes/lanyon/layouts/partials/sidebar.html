@@ -1,0 +1,29 @@
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>Jonathan Wilson</p>
+    <p style="margin-left: 10px">Software developer and Techstars-backed startup founder</p>
+    <p style="margin-left: 10px">Contact: jswilson @ the domain of this website</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item {{ if .IsHome }} active {{ end }}" href="/">Home</a>
+    <a class="sidebar-nav-item {{ if eq .RelPermalink "/post/" }} active {{ end }}" href="/posts">Posts</a>
+
+    {{ $thisperma := .Permalink }}
+    {{ range .Site.Pages.ByWeight }}
+      {{ if isset .Params "sidebar" }}
+        <a class="sidebar-nav-item {{ if eq .Permalink $thisperma }} active {{ end }}" href="{{ .Permalink }}">{{ .Title }}</a>
+      {{ end }}
+    {{ end }}
+
+  </nav>
+
+  <div class="sidebar-item">
+    <p>&copy; {{ .Site.LastChange.Year }} All rights reserved.</p>
+  </div>
+</div>
