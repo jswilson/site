@@ -2,7 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 
   <head>
-	<meta name="generator" content="Hugo 0.57.2" />
   <link href="http://gmpg.org/xfn/11" rel="profile">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
@@ -11,7 +10,7 @@
 
   <title>
     
-      Jonathan Wilson &middot; 
+      Analyzing PGA Tour Television Broadcasts, Part 1 &middot; Jonathan Wilson
     
   </title>
 
@@ -44,7 +43,7 @@
   </div>
 
   <nav class="sidebar-nav">
-    <a class="sidebar-nav-item  active " href="/">Home</a>
+    <a class="sidebar-nav-item " href="/">Home</a>
     <a class="sidebar-nav-item " href="/posts">Posts</a>
 
     
@@ -84,15 +83,10 @@
       <div class="container content">
 
 
-
-
-
-<div class="posts">
+<div class="post">
+  <h1 class="post-title">Analyzing PGA Tour Television Broadcasts, Part 1</h1>
+  <span class="post-date">Sep 1, 2019</span>
   
-    <div class="post">
-        <h1 class="post-title"><a href="http://example.org/posts/analyzing-pga-tour-broadcasts-part-1/">Analyzing PGA Tour Television Broadcasts, Part 1</a></h1>
-        <span class="post-date">Sep 1, 2019</span>
-        
 
 <p><em>tl;dr: PGA Tour broadcasts are typically background noise for a Sunday afternoon nap, and we want to know why.  We perform some manual data labeling and machine learning to classify parts of golf broadcasts as legitimate golf-related content or not.  The early data shows that the major networks generally do broadcast an adequate amount of golf-related content, but it&rsquo;s possible that the Golf Channel does not.  We do have more to analyze in order to uncover why golf broadcasts are boring, and we plan to continue this same analysis with more data, as well as perform more advanced analyses.</em></p>
 
@@ -683,171 +677,6 @@ Best val Acc: 0.944027
 
 <p>But what does it mean if the percentage of <code>regular-broadcast</code> content in each broadcast is already very good?  The next step would be to take a much closer look at what is inside that <code>regular-broadcast</code> content.  We said a few different classes were bad and excluded those from the <code>regular-broadcast</code> class; but next, we&rsquo;re going to call some classes <em>good</em> and only include those as the valuable part of the broadcast.  Specifically, we&rsquo;ll look at the number of <em>golf shots</em> that are in each broadcast.  We&rsquo;ll use a more complex model to identify and count the real golf shots and see if we can learn more about what makes broadcasts boring.  Keep an eye out for the next post in this series soon.</p>
 
-    </div>
-  
-    <div class="post">
-        <h1 class="post-title"><a href="http://example.org/posts/release-of-range-tagger/">Release of range-tagger v0.0.1</a></h1>
-        <span class="post-date">Aug 22, 2019</span>
-        
-
-<p><em>tl;dr: range-tagger is an application to help manually label segments of long videos to create training datasets for use in machine learning.  You can download it <a href="https://github.com/jswilson/range-tagger/releases/tag/v0.0.1">here</a> (OSX only for now) and watch a demo video <a href="https://youtu.be/sZvp8YXCoto">here</a></em></p>
-
-<h1 id="motivation">Motivation</h1>
-
-<p>I was recently working on a machine learning project that required classifying every frame in a set of 4-hour videos.  To simplify describing the project, you can think of it like trying to classify television broadcast footage into “commercial” and “show” labels; we want to accurately label every frame in a broadcast as being an advertisement or part of the actual television show.</p>
-
-<p>We had a collection of videos, but unfortunately none of it was labeled, so we had to create our own training data by manually labeling a portion of the videos.  What&rsquo;s the best way to go about doing this?  We didn&rsquo;t want to manually tag every single frame in the videos.  <em>&ldquo;Here is frame 4789, is it a &lsquo;commercial&rsquo; or &lsquo;show&rsquo;?  Now here&rsquo;s frame 4790&hellip;&rdquo;</em>  This is a television broadcast, so you would never have a commercial frame followed by a television frame, followed by a commercial frame.</p>
-
-<p>Since we don&rsquo;t want to actually look at and classify every frame, it&rsquo;s easier to think of this problem as we are searching for the boundaries between parts of the video:</p>
-
-<p><img src="/identify.png" alt="" title="Identify video boundaries" /></p>
-
-<p>We want to end up with <em>ranges of frames</em>, each with a certain tag.  The end result should be:</p>
-
-<table>
-<thead>
-<tr>
-<th>Start Frame</th>
-<th>End Frame</th>
-<th>Tag</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>0</td>
-<td>456</td>
-<td>Commercial</td>
-</tr>
-
-<tr>
-<td>457</td>
-<td>1193</td>
-<td>Show</td>
-</tr>
-
-<tr>
-<td>1194</td>
-<td>2035</td>
-<td>Commercial</td>
-</tr>
-
-<tr>
-<td>&hellip;</td>
-<td>&hellip;</td>
-<td>&hellip;</td>
-</tr>
-</tbody>
-</table>
-
-<p>This is distinct from a more common video use case, object detection.  One example of object detection might be <em>“In this video, label all of the cars.”</em>  Every frame doesn’t necessarily contain a car, or the opposite might be true depending on your source and every frame contains dozens of cars.  In our use case, we don’t need to examine every single frame like with object detection; we just need to find the “edges” of sections of the video.</p>
-
-<p>There are standalone applications to help with object detection in videos (Microsoft has a good open source offering <a href="https://github.com/microsoft/VoTT">here</a>), but I was unable to find anything catering to my specific use case.</p>
-
-<h1 id="initial-approach">Initial Approach</h1>
-
-<p>Before creating range-tagger, I initially was solving the problem with a manual process.  I used freely available video players to view and navigate through the video.  I started at the beginning of the video, noted what was displayed, and then used the player’s navigation tools to move forward in the video until I found the frame at which it changed into another section.  I then recorded the frame numbers and the appropriate tag for that range in a spreadsheet.  But I ran into some problems:</p>
-
-<h3 id="1-the-process-was-error-prone">1. The process was error prone</h3>
-
-<p>These are long video files (4+ hours), so the frame numbers quickly became 6 digits.  It was easy to make mistakes when recording the frame numbers.  Since the purpose of this process was to generate an accurate training dataset, this was a fairly significant problem.</p>
-
-<h3 id="2-the-freely-available-video-players-had-flaws-that-made-them-poor-fits-for-my-use-case">2. The freely available video players had flaws that made them poor fits for my use case</h3>
-
-<p>For instance, <a href="https://www.videolan.org/vlc/index.html">VLC</a> is phenomenal for watching and consuming media, but it isn’t what I would call “frame-first.”  That is, you can&rsquo;t say &ldquo;go to this specific frame number&rdquo; or &ldquo;go forward 12 frames.&rdquo;  Traditional media players are designed for a human being consuming media, not a computer program reading specific frames.  That isn&rsquo;t the way modern video codecs are designed to work, so video players don’t provide those features.  But I <em>do</em> need to know which frame I’m on, and I do need to navigate frame-by-frame through videos.  While VLC does generally provide good coarse and fine navigation abilities, you can&rsquo;t go backwards one frame.  This lack of “frame-first” navigation made VLC a less than ideal solution.</p>
-
-<p>I also tried an open source video editor called <a href="https://www.openshot.org/">OpenShot</a>, which is a great piece of software.  It is much more of a “frame-first” video editor; it displays frame numbers and allows you to navigate frame-by-frame, which is what I need for my use case.  But, its navigation features weren’t as fully featured as VLC’s.  There are <em>only</em> frame-forward and frame-backward keys; you can hold them down to make larger frame jumps, but it doesn’t provide coarse enough navigation abilities to quickly move through the 4+ hour videos I’m dealing with.</p>
-
-<p>Between the process being very error prone, and no freely available solutions being “frame-first” and easy to navigate, I decided to create an application customized to my workflow.</p>
-
-<h1 id="enter-range-tagger">Enter range-tagger</h1>
-
-<p>range-tagger is an OSX, python, Qt-based application I created that is designed to solve these problems.  range-tagger provides:</p>
-
-<ul>
-<li>Simple tools for the user to mark segments of the video without typing frame numbers</li>
-<li>Coarse and fine video navigation that work at the frame-by-frame level</li>
-<li>A “frame-first” video system that knows which frame of video you are currently seeing</li>
-</ul>
-
-<p><img src="/range-tagger.jpg" alt="" title="range-tagger screenshot" /></p>
-
-<p>I won&rsquo;t delve too much into how it works here, but you can check out a demo/how-to video at <a href="https://youtu.be/sZvp8YXCoto">this link</a>.</p>
-
-<h2 id="technical-design-decisions">Technical Design Decisions</h2>
-
-<p>There were a few big technical decisions that shaped how range-tagger works; I thought it would be useful to document the motivations behind them.</p>
-
-<h3 id="web-vs-desktop">Web vs. Desktop</h3>
-
-<p>This was really the first big decision: should range-tagger be a web app or a desktop app?  A web app would generally be preferred, since it allows anyone to get started without installation, but I ran into issues trying to identify a suitable video player library.  While there are a variety of video players available for use on the web, I was unable to find a free solution that provided frame-by-frame access and navigation.  There are paid solutions available, but one of the subgoals of this project was to offer an open source tool to the community.  Given the difficulty in solving the frame-level video problem on the web, I decided to go with a desktop application.  Sidenote: an open source, frame-by-frame web-based video player appears to be a hole in available offerings, if anyone is looking for a project.</p>
-
-<h3 id="choice-of-video-library">Choice of Video Library</h3>
-
-<p>Once the decision was made to make this a desktop app, I still had to choose the right library to handle video playing and navigation.  This is the API range-tagger uses internally to interface with the video library:</p>
-
-<pre><code>    def get_total_frames(self):
-        # return the total number of frames in the video
-
-    def get_current_frame_number(self):
-        # return the frame number we are currently viewing
-
-    def get_frame(self, frame_number):
-        # return the image at the given frame_number
-</code></pre>
-
-<p>This is a very simple API, which is nice because it means we can easily swap out video libraries to test them, but it was actually a little tricky to find a library that could meet it.</p>
-
-<p>I evaluated a few different video libraries:</p>
-
-<h3 id="libvlc">❌ libVLC</h3>
-
-<p>The VLC developers also provide a library that performs all of the functions of VLC.  You could actually create an entire clone of the VLC application using just libVLC.  However, libVLC has the same problem as VLC: it is not “frame-first,” so you don’t know what frame you’re on, and you can’t access specific frames.</p>
-
-<h3 id="opencv">❌ opencv</h3>
-
-<p>Typically used for computer vision, opencv does provide mechanisms for video I/O.  I had a promising start with opencv, since the API does allow direct access to frames.  Unfortunately, the API provides <a href="https://github.com/opencv/opencv/issues/9053#issuecomment-503788660">incorrect results</a>; that is, you can use the API to ask for frame 6418, but you might not get frame 6418&hellip;you might get a different frame.  opencv is certainly a great library, but they should probably remove the API if it can’t/won’t provide the correct results.</p>
-
-<h3 id="libopenshot">✅ libopenshot</h3>
-
-<p>I actually hadn’t previously heard of <a href="https://github.com/OpenShot/libopenshot">libopenshot</a> until developing this application.  Much like VLC is based on libVLC, the OpenShot video editor is based entirely on libopenshot.  Their API provides frame-by-frame access to video files (and it works), so it can fulfill the required API.  I was pretty excited to stumble upon libopenshot, actually; I had been getting dismayed at the prospects of finding a workable library, but it ticks all the boxes, so this was what I chose.</p>
-
-<h3 id="osx-only">OSX Only</h3>
-
-<p>The only downside of libopenshot is it doesn’t appear to be too widely used, and as a result it doesn’t have prebuilt binaries available for all platforms.  Getting it to compile for my platform (OSX) was a fairly significant task, so I haven’t yet built it for Linux and Windows platforms.  This is the only dependency tying range-tagger to a single platform; I’d be happy to help anyone make a build for Linux or Windows if they have a need for it.</p>
-
-<h1 id="results">Results</h1>
-
-<p>With those decisions made, I was able to put together range-tagger in fairly short order.  Upon completion of the first version, I was able to label about 11 hours worth of video in under 2 hours with great accuracy and little trouble.  While range-tagger remains in alpha, it is still ready to be used for any similar workloads you might have with tagging video.</p>
-
-<h1 id="future-work">Future work</h1>
-
-<p>There are a couple of areas I’d like to explore in the future:</p>
-
-<h3 id="faster-video-library">Faster video library</h3>
-
-<p>libopenshot is a great library, and it works especially well on lower resolution video, but there can be a noticeable delay when accessing frames completely randomly in HD video, a delay that isn’t present in commercial video editors.  This is a tough problem to solve (again, modern video codecs aren’t designed for efficient random access), but I’d like to see what can be done to make the <code>get_frame</code> operation as fast as possible, even when randomly accessing frames in high resolution video.</p>
-
-<h3 id="new-user-interface-methods-for-finding-video-edges">New user interface methods for finding video edges</h3>
-
-<p>I started range-tagger with the simplest method: allow the user to efficiently navigate the video both coarsely and finely.  But are there other methods that could be even better?  Range-tagger can be a place to experiment with new methods of video navigation for this purpose.</p>
-
-<h1 id="conclusion">Conclusion</h1>
-
-<p>Feel free to reach out on github if you use range-tagger, or if you have any interest in getting it built for Linux or Windows.  Again, you can download the first release of range tagger <a href="https://github.com/jswilson/range-tagger/releases/tag/v0.0.1">here</a>.  Enjoy!</p>
-
-    </div>
-  
-</div>
-
-<div class="pagination">
-  
-  <span class="pagination-item older">Older</span>
-  
-
-  
-  <span class="pagination-item newer">Newer</span>
-  
 </div>
 
       </div>

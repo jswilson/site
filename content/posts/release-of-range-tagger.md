@@ -1,7 +1,7 @@
 ---
 title: "Release of range-tagger v0.0.1"
 date: 2019-08-22T11:41:13-04:00
-draft: true
+draft: false
 ---
 
 *tl;dr: range-tagger is an application to help manually label segments of long videos to create training datasets for use in machine learning.  You can download it [here](https://github.com/jswilson/range-tagger/releases/tag/v0.0.1) (OSX only for now) and watch a demo video [here](https://youtu.be/sZvp8YXCoto)*

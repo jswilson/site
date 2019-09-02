@@ -1,7 +1,7 @@
 ---
 title: "Analyzing PGA Tour Television Broadcasts, Part 1"
-date: 2019-08-22T17:37:04-04:00
-draft: true
+date: 2019-09-01T17:37:04-04:00
+draft: false
 ---
 
 

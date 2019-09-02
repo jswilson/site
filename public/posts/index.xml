@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on </title>
+    <link>http://example.org/posts/</link>
+    <description>Recent content in Posts on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 01 Sep 2019 17:37:04 -0400</lastBuildDate>
+    
+	<atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Analyzing PGA Tour Television Broadcasts, Part 1</title>
+      <link>http://example.org/posts/analyzing-pga-tour-broadcasts-part-1/</link>
+      <pubDate>Sun, 01 Sep 2019 17:37:04 -0400</pubDate>
+      
+      <guid>http://example.org/posts/analyzing-pga-tour-broadcasts-part-1/</guid>
+      <description>tl;dr: PGA Tour broadcasts are typically background noise for a Sunday afternoon nap, and we want to know why. We perform some manual data labeling and machine learning to classify parts of golf broadcasts as legitimate golf-related content or not. The early data shows that the major networks generally do broadcast an adequate amount of golf-related content, but it&amp;rsquo;s possible that the Golf Channel does not. We do have more to analyze in order to uncover why golf broadcasts are boring, and we plan to continue this same analysis with more data, as well as perform more advanced analyses.</description>
+    </item>
+    
+    <item>
+      <title>Release of range-tagger v0.0.1</title>
+      <link>http://example.org/posts/release-of-range-tagger/</link>
+      <pubDate>Thu, 22 Aug 2019 11:41:13 -0400</pubDate>
+      
+      <guid>http://example.org/posts/release-of-range-tagger/</guid>
+      <description>tl;dr: range-tagger is an application to help manually label segments of long videos to create training datasets for use in machine learning. You can download it here (OSX only for now) and watch a demo video here
+Motivation I was recently working on a machine learning project that required classifying every frame in a set of 4-hour videos. To simplify describing the project, you can think of it like trying to classify television broadcast footage into “commercial” and “show” labels; we want to accurately label every frame in a broadcast as being an advertisement or part of the actual television show.</description>
+    </item>
+    
+  </channel>
+</rss>

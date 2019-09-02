@@ -4,6 +4,22 @@
   
   <url>
     <loc>http://example.org/</loc>
+    <lastmod>2019-09-01T17:37:04-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://example.org/posts/analyzing-pga-tour-broadcasts-part-1/</loc>
+    <lastmod>2019-09-01T17:37:04-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://example.org/posts/</loc>
+    <lastmod>2019-09-01T17:37:04-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://example.org/posts/release-of-range-tagger/</loc>
+    <lastmod>2019-08-22T11:41:13-04:00</lastmod>
   </url>
   
   <url>
