@@ -116,7 +116,7 @@
 
 <h3 id="3-automatic-video-analysis">3. Automatic Video Analysis</h3>
 
-<p>After we have done some initial analysis manually, we&rsquo;re going to want to perform it on an ongoing basis on larger quantities of data.  Given that this is a side project, we don&rsquo;t want to commit to manually analyzing dozens of hours of footage each week, so we&rsquo;ll need to develop an automatic method.</p>
+<p>After we have done some initial analysis manually, we&rsquo;re going to want to perform it on an ongoing basis on larger quantities of data.  We don&rsquo;t want to commit to manually analyzing dozens of hours of footage each week, so we&rsquo;ll need to develop an automatic method.</p>
 
 <h1 id="data-collection">Data Collection</h1>
 
@@ -128,7 +128,7 @@
 
 <h1 id="manual-video-analysis">Manual Video Analysis</h1>
 
-<p>Once we collect the data, we have to determine how we’re going to use it to analyze the hypothesis.  How can we label these videos to test the hypothesis?  We are going to split the broadcast into 4 different classes.  Three of those classes are <em>not</em> golf-related and so should be subtracted from the total broadcast to find the golf-related content.  Our fourth class is the true golf-related content (or basically everything left over):</p>
+<p>Once we collect the data, we have to determine how we’re going to use it to analyze the hypothesis.  How can we label these videos to test the hypothesis?  We are going to split the broadcast into 4 different classes.  Three of those classes are <em>not</em> golf-related and should be subtracted from the total broadcast to find the golf-related content.  Our fourth class is the true golf-related content (or basically everything left over):</p>
 
 <h3 id="commercials">Commercials</h3>
 
@@ -167,7 +167,7 @@
 
 <p>In order to run any sort of analysis, we need to classify the data we have into the above 4 classes: <code>commercial</code>, <code>segment</code>, <code>playing-through</code>, or <code>regular-broadcast</code>.  Each video is really a collection of frames, and we want every frame to have one of these labels associated with it.</p>
 
-<p>There might be 15 hours of data or more per tournament, so the prospect of performing this job entirely manually is fairly unappealing.  To solve this problem, I created a special application called range-tagger.  You can learn more about range-tagger <a href="https://www.jswilson.co/posts/release-of-range-tagger/">here</a>, but basically, it is designed to assist a user who needs to manually classify ranges of frames in a video.  For instance, range-tagger can help us to manually classify parts of video into sections like “Frames 0 through 1123 are a commercial, and frames 1124 through 3495 are the regular broadcast” and so on.  Fortunately, range-tagger provides approximately a 6x speedup over real-time, so accurately tagging 11 hours of video took under 2 hours.</p>
+<p>There might be 15 hours of data or more per tournament, so the prospect of performing this job entirely manually is fairly unappealing.  To solve this problem, I created a special application called range-tagger.  You can learn more about range-tagger <a href="https://www.jswilson.co/posts/release-of-range-tagger/">here</a>, but basically, it is designed to assist a user who needs to manually classify ranges of frames in a video.  For instance, range-tagger can help us to manually classify parts of a video into sections like “Frames 0 through 1123 are a commercial, and frames 1124 through 3495 are the regular broadcast” and so on.  Fortunately, range-tagger provides approximately a 6x speedup over real-time, so accurately tagging 11 hours of video took under 2 hours.</p>
 
 <p>Even with this speedup, manually tagging is an monotonous task, so I started by manually tagging only 3 of the videos:</p>
 
@@ -205,7 +205,7 @@
 </tbody>
 </table>
 
-<p>This gave us about 11 hours of accurately labeled video data at the frame-level.  Through the rest of this article, you&rsquo;ll see the videos referred to using their codename listed in the above chart.</p>
+<p>This gave us about 11 hours of accurately labeled video data at the frame-level.  Throughout the rest of this article, you&rsquo;ll see the videos referred to using their codename listed in the above chart.</p>
 
 <h2 id="initial-results">Initial Results</h2>
 
@@ -215,9 +215,9 @@
 <thead>
 <tr>
 <th></th>
-<th>wgc-3</th>
-<th>nt-3</th>
-<th>nt-4</th>
+<th><code>wgc-3</code></th>
+<th><code>nt-3</code></th>
+<th><code>nt-4</code></th>
 </tr>
 </thead>
 
@@ -270,7 +270,7 @@
 
 <p>The x-axis is frames (which is the passage of time), and each y-axis entry is one of our 4 classes.  When a piece of a row is colored in, that means that was the class present at the given frame.  In a perfect world, the <code>regular-broadcast</code> row would be entirely solid with no gaps, but in reality the other three classes take chunks out of its timeline.</p>
 
-<p>Let&rsquo;s put up the plots for the other two rounds and then draw some conclusions; first here is the plot for <code>nt-3</code>:</p>
+<p>Let&rsquo;s put up the plots for the other two rounds and then draw some conclusions; first, here is the plot for <code>nt-3</code>:</p>
 
 <figure>
     <img src="/nt-rnd3-truth.png"/> 
@@ -284,7 +284,7 @@
 </figure>
 
 
-<p>It&rsquo;s an interesting way to view the contents of a broadcast!  The main thing that jumped out at me visually is the large number of interruptions in the <code>nt-3</code> video.  Between <code>commercials</code>, <code>segments</code>, and <code>playing-through</code>, the broadcast is interrupted the exact same number of times (27) as the <code>wgc-3</code> video, even though the <code>wgc-3</code> video is 27.2% longer.</p>
+<p>It&rsquo;s an interesting way to view the content of a broadcast!  The main thing that jumped out at me visually is the large number of interruptions in the <code>nt-3</code> video.  Between <code>commercials</code>, <code>segments</code>, and <code>playing-through</code>, the broadcast is interrupted the exact same number of times (27) as the <code>wgc-3</code> video, even though the <code>wgc-3</code> video is 27.2% longer.</p>
 
 <p>Another interesting note is the minimal use of the <code>playing-through</code> feature.  All three of videos were broadast by CBS, so they actually seem to make very modest use of it in their production.</p>
 
@@ -306,7 +306,7 @@
 
 <p>We already have the labels for the frames in our videos; we just need to actually extract frames to individual image files.  I wrote a small script to extract frames from a video as images which you can find <a href="https://github.com/jswilson/analyzing-pga-tour-broadcasts_scripts/blob/master/extract-frames.py">here</a>.  It does use the <code>libopenshot</code> module, which is a little tricky to compile, but you can also extract frames using command line ffmpeg without any issues.  The script extracts 1 frame for every 30 frames of video, or about 1 frame per second.</p>
 
-<p>We can combine the extracted image files with the labels to create a dataset appropriate for use in machine learning.  I&rsquo;ve left out the code for this part, since it&rsquo;s not particularly interesting, but we just match frame numbers to labeled ranges and place them into the proper folders.  So we convert our 3 videos to images on disk, and then we use the labels to sort them into a folder structure that looks like this:</p>
+<p>We can combine the extracted image files with the labels we tagged with range-tagger to create a dataset appropriate for use in machine learning.  I&rsquo;ve left out the code for this part, since it&rsquo;s not particularly interesting, but we just match frame numbers to labeled ranges and place them into the proper folders.  So we convert our 3 videos to images on disk, and then we use the labels to sort them into a folder structure that looks like this:</p>
 
 <pre><code>root/
 └── train/
@@ -417,7 +417,7 @@ Best val Acc: 0.944027
 
 <p><a href="/mem-rnd3-with-errors-rolling-30.png"><img src="/mem-rnd3-with-errors-rolling-30.png" alt="" /></a></p>
 
-<p>The widths of the bars isn&rsquo;t <em>quite</em> right in this plot (this is a little tricky to make perfectly accurate), but it still shows visually that the rolling window approach allows us to significantly reduce the classification errors.  This error rate is definitely acceptable for now, and I believe we can improve it with more training data.</p>
+<p>The width of the bars isn&rsquo;t <em>quite</em> right in this plot (this is a little tricky to make perfectly accurate), but it still shows visually that the rolling window approach allows us to significantly reduce the classification errors.  This error rate is definitely acceptable for now, and I believe we can improve it with more training data.</p>
 
 <h1 id="exploring-the-results">Exploring the Results</h1>
 
@@ -671,11 +671,11 @@ Best val Acc: 0.944027
 
 <h1 id="conclusion-and-future-work">Conclusion and Future Work</h1>
 
-<p>For the rounds of golf that most people tend to watch (those broadcast by the major networks on Saturday and Sunday), we can say that an adequate amount of real content is being shown.  They typically show more content than the average television show does.  We can&rsquo;t say that as definitively for Golf Channel broadcasts, but those aren&rsquo;t watched nearly as major as the major broadcasts.</p>
+<p>For the rounds of golf that most people tend to watch (those broadcast by the major networks on Saturday and Sunday), we can say that an adequate amount of real content is being shown.  They typically show more content than the average television show does.  We can&rsquo;t say that as definitively for Golf Channel broadcasts, but those aren&rsquo;t watched nearly as much as the major broadcasts.</p>
 
 <p>What can we do to uncover more insight?  First, we&rsquo;re going to keep collecting data and analyzing it using the same process.  We only have 7 broadcasts from the major networks, and the samples we have are from especially popular tournaments.  A fuller dataset that includes a more representative sample of the broadcasts might yield more insight.  I&rsquo;ll be publishing data I collect from future tournaments on an ongoing basis.</p>
 
-<p>But what does it mean if the percentage of <code>regular-broadcast</code> content in each broadcast is already very good?  The next step would be to take a much closer look at what is inside that <code>regular-broadcast</code> content.  We said a few different classes were bad and excluded those from the <code>regular-broadcast</code> class; but next, we&rsquo;re going to call some classes <em>good</em> and only include those as the valuable part of the broadcast.  Specifically, we&rsquo;ll look at the number of <em>golf shots</em> that are in each broadcast.  We&rsquo;ll use a more complex model to identify and count the real golf shots and see if we can learn more about what makes broadcasts boring.  Keep an eye out for the next post in this series soon.</p>
+<p>But what does it mean if the percentage of <code>regular-broadcast</code> content in each broadcast is already very good?  The next step would be to take a much closer look at what is inside that <code>regular-broadcast</code> content.  Instead of the blacklist approach we took in this article where we said a few different classes were bad and excluded those from the <code>regular-broadcast</code> class, we will take a whitelist approach and call some classes <em>good</em> and only include those as the valuable part of the broadcast.  Specifically, we&rsquo;ll look at the number of <em>golf shots</em> that are in each broadcast.  We&rsquo;ll use a more complex model to identify and count the real golf shots and see if we can learn more about what makes broadcasts boring.  Keep an eye out for the next post in this series soon.</p>
 
 </div>
 

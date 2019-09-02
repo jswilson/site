@@ -26,7 +26,7 @@ No matter how we approach this, we need to collect real golf television broadcas
 ### 2. Manual Video Analysis
 Once we have the data collected, we're going to have to analyze it.  We'll have to define which parts of the broadcast are "good" and which parts are "bad"; we'll also have to find a way to label these parts for analysis.
 ### 3. Automatic Video Analysis
-After we have done some initial analysis manually, we're going to want to perform it on an ongoing basis on larger quantities of data.  Given that this is a side project, we don't want to commit to manually analyzing dozens of hours of footage each week, so we'll need to develop an automatic method.
+After we have done some initial analysis manually, we're going to want to perform it on an ongoing basis on larger quantities of data.  We don't want to commit to manually analyzing dozens of hours of footage each week, so we'll need to develop an automatic method.
 
 
 # Data Collection
@@ -38,7 +38,7 @@ I scheduled recordings for all upcoming PGA Tour tournaments.  The PGA Tour seas
 
 
 # Manual Video Analysis
-Once we collect the data, we have to determine how we’re going to use it to analyze the hypothesis.  How can we label these videos to test the hypothesis?  We are going to split the broadcast into 4 different classes.  Three of those classes are *not* golf-related and so should be subtracted from the total broadcast to find the golf-related content.  Our fourth class is the true golf-related content (or basically everything left over):
+Once we collect the data, we have to determine how we’re going to use it to analyze the hypothesis.  How can we label these videos to test the hypothesis?  We are going to split the broadcast into 4 different classes.  Three of those classes are *not* golf-related and should be subtracted from the total broadcast to find the golf-related content.  Our fourth class is the true golf-related content (or basically everything left over):
 
 ### Commercials
 Just like everything on television, golf has plenty of commercials.  But how many?  Does it have more than the average television show?  Less?  Commercials are a fairly obvious interruption to the broadcast that are definitely worth tracking.
@@ -70,7 +70,7 @@ And finally, for purposes of this experiment, everything else leftover is consid
 ## Analysis
 In order to run any sort of analysis, we need to classify the data we have into the above 4 classes: ```commercial```, ```segment```, ```playing-through```, or ```regular-broadcast```.  Each video is really a collection of frames, and we want every frame to have one of these labels associated with it.
 
-There might be 15 hours of data or more per tournament, so the prospect of performing this job entirely manually is fairly unappealing.  To solve this problem, I created a special application called range-tagger.  You can learn more about range-tagger [here]({{< ref "/posts/release-of-range-tagger" >}}), but basically, it is designed to assist a user who needs to manually classify ranges of frames in a video.  For instance, range-tagger can help us to manually classify parts of video into sections like “Frames 0 through 1123 are a commercial, and frames 1124 through 3495 are the regular broadcast” and so on.  Fortunately, range-tagger provides approximately a 6x speedup over real-time, so accurately tagging 11 hours of video took under 2 hours.
+There might be 15 hours of data or more per tournament, so the prospect of performing this job entirely manually is fairly unappealing.  To solve this problem, I created a special application called range-tagger.  You can learn more about range-tagger [here]({{< ref "/posts/release-of-range-tagger" >}}), but basically, it is designed to assist a user who needs to manually classify ranges of frames in a video.  For instance, range-tagger can help us to manually classify parts of a video into sections like “Frames 0 through 1123 are a commercial, and frames 1124 through 3495 are the regular broadcast” and so on.  Fortunately, range-tagger provides approximately a 6x speedup over real-time, so accurately tagging 11 hours of video took under 2 hours.
 
 Even with this speedup, manually tagging is an monotonous task, so I started by manually tagging only 3 of the videos:
 
@@ -80,13 +80,13 @@ Even with this speedup, manually tagging is an monotonous task, so I started by 
 | Northern Trust Open | Third Round | 3 hours | ```nt-3``` |
 | Northern Trust Open | Fourth Round | 4 hours | ```nt-4``` |
 
-This gave us about 11 hours of accurately labeled video data at the frame-level.  Through the rest of this article, you'll see the videos referred to using their codename listed in the above chart.
+This gave us about 11 hours of accurately labeled video data at the frame-level.  Throughout the rest of this article, you'll see the videos referred to using their codename listed in the above chart.
 
 ## Initial Results
 
 This table shows the number of frames in each video that falls into each of our 4 categories after manual labeling.  Since "number of frames" isn't a particularly intuitive number, I've also included the percentage that the segment makes up of the particular video it is a part of:
 
-|  | wgc-3 | nt-3 | nt-4 |
+|  | ```wgc-3``` | ```nt-3``` | ```nt-4``` |
 | ----- | ----------- | ----------- | ----------- |
 | ```commercial``` | 69660 (16.9%)| 61320 (19.0%) | 65530 (15.0%)|
 | ```segment``` | 6870 (1.7%)|  20820 (6.4%)| 26580 (6.1%)|
@@ -104,7 +104,7 @@ It's a little hard to understand these numbers just looking at a table, so I als
 
 The x-axis is frames (which is the passage of time), and each y-axis entry is one of our 4 classes.  When a piece of a row is colored in, that means that was the class present at the given frame.  In a perfect world, the ```regular-broadcast``` row would be entirely solid with no gaps, but in reality the other three classes take chunks out of its timeline.
 
-Let's put up the plots for the other two rounds and then draw some conclusions; first here is the plot for ```nt-3```:
+Let's put up the plots for the other two rounds and then draw some conclusions; first, here is the plot for ```nt-3```:
 
 {{< figure
     src="/nt-rnd3-truth.png"
@@ -116,7 +116,7 @@ And now here is the plot for ```nt-4```:
     src="/nt-rnd4-truth.png"
 >}}
 
-It's an interesting way to view the contents of a broadcast!  The main thing that jumped out at me visually is the large number of interruptions in the ```nt-3``` video.  Between ```commercials```, ```segments```, and ```playing-through```, the broadcast is interrupted the exact same number of times (27) as the ```wgc-3``` video, even though the ```wgc-3``` video is 27.2% longer.
+It's an interesting way to view the content of a broadcast!  The main thing that jumped out at me visually is the large number of interruptions in the ```nt-3``` video.  Between ```commercials```, ```segments```, and ```playing-through```, the broadcast is interrupted the exact same number of times (27) as the ```wgc-3``` video, even though the ```wgc-3``` video is 27.2% longer.
 
 Another interesting note is the minimal use of the ```playing-through``` feature.  All three of videos were broadast by CBS, so they actually seem to make very modest use of it in their production.
 
@@ -138,7 +138,7 @@ This task is a video classification task; we have a video, and we want to classi
 
 We already have the labels for the frames in our videos; we just need to actually extract frames to individual image files.  I wrote a small script to extract frames from a video as images which you can find [here](https://github.com/jswilson/analyzing-pga-tour-broadcasts_scripts/blob/master/extract-frames.py).  It does use the ```libopenshot``` module, which is a little tricky to compile, but you can also extract frames using command line ffmpeg without any issues.  The script extracts 1 frame for every 30 frames of video, or about 1 frame per second.
 
-We can combine the extracted image files with the labels to create a dataset appropriate for use in machine learning.  I've left out the code for this part, since it's not particularly interesting, but we just match frame numbers to labeled ranges and place them into the proper folders.  So we convert our 3 videos to images on disk, and then we use the labels to sort them into a folder structure that looks like this:
+We can combine the extracted image files with the labels we tagged with range-tagger to create a dataset appropriate for use in machine learning.  I've left out the code for this part, since it's not particularly interesting, but we just match frame numbers to labeled ranges and place them into the proper folders.  So we convert our 3 videos to images on disk, and then we use the labels to sort them into a folder structure that looks like this:
 
 ```
 root/
@@ -246,7 +246,7 @@ We can look at the new error plot using this approach:
 
 [![](/mem-rnd3-with-errors-rolling-30.png)](/mem-rnd3-with-errors-rolling-30.png)
 
-The widths of the bars isn't *quite* right in this plot (this is a little tricky to make perfectly accurate), but it still shows visually that the rolling window approach allows us to significantly reduce the classification errors.  This error rate is definitely acceptable for now, and I believe we can improve it with more training data.
+The width of the bars isn't *quite* right in this plot (this is a little tricky to make perfectly accurate), but it still shows visually that the rolling window approach allows us to significantly reduce the classification errors.  This error rate is definitely acceptable for now, and I believe we can improve it with more training data.
 
 # Exploring the Results
 So now that we have a way to automatically classify entire broadcasts into our 4 classes, we can run the model against *all* of the collected data.  There are many ways we could explore this data, but let's see if we can gain any insight about our initial hypothesis: *“the average golf broadcast contains too much non-golf related content.”*.  This table shows the percentage of each broadcast that is tagged with the ```regular-broadcast``` class, and each entry also includes the network that broadcast that particular dataset (higher ```regular-broadcast``` percentage is better):
@@ -298,8 +298,8 @@ We can look at just the 7 broadcasts done by the major networks, which will gene
 Only 1 has less content than the average television show, and the remaining 6 contain 74.2% or more.  The fourth round of the Tour Champshionship is particularly incredible at 85.7% content; NBC delivered a large portion of this broadcast commercial free.  The one video that was worse than the average TV show was ```nt-3```, which we examined in detail earlier.  With this initial limited dataset, it appears to be an outlier.
 
 # Conclusion and Future Work
-For the rounds of golf that most people tend to watch (those broadcast by the major networks on Saturday and Sunday), we can say that an adequate amount of real content is being shown.  They typically show more content than the average television show does.  We can't say that as definitively for Golf Channel broadcasts, but those aren't watched nearly as major as the major broadcasts.
+For the rounds of golf that most people tend to watch (those broadcast by the major networks on Saturday and Sunday), we can say that an adequate amount of real content is being shown.  They typically show more content than the average television show does.  We can't say that as definitively for Golf Channel broadcasts, but those aren't watched nearly as much as the major broadcasts.
 
 What can we do to uncover more insight?  First, we're going to keep collecting data and analyzing it using the same process.  We only have 7 broadcasts from the major networks, and the samples we have are from especially popular tournaments.  A fuller dataset that includes a more representative sample of the broadcasts might yield more insight.  I'll be publishing data I collect from future tournaments on an ongoing basis.
 
-But what does it mean if the percentage of ```regular-broadcast``` content in each broadcast is already very good?  The next step would be to take a much closer look at what is inside that ```regular-broadcast``` content.  We said a few different classes were bad and excluded those from the ```regular-broadcast``` class; but next, we're going to call some classes *good* and only include those as the valuable part of the broadcast.  Specifically, we'll look at the number of *golf shots* that are in each broadcast.  We'll use a more complex model to identify and count the real golf shots and see if we can learn more about what makes broadcasts boring.  Keep an eye out for the next post in this series soon.
+But what does it mean if the percentage of ```regular-broadcast``` content in each broadcast is already very good?  The next step would be to take a much closer look at what is inside that ```regular-broadcast``` content.  Instead of the blacklist approach we took in this article where we said a few different classes were bad and excluded those from the ```regular-broadcast``` class, we will take a whitelist approach and call some classes *good* and only include those as the valuable part of the broadcast.  Specifically, we'll look at the number of *golf shots* that are in each broadcast.  We'll use a more complex model to identify and count the real golf shots and see if we can learn more about what makes broadcasts boring.  Keep an eye out for the next post in this series soon.

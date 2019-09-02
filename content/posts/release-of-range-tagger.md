@@ -53,7 +53,7 @@ range-tagger is an OSX, python, Qt-based application I created that is designed 
 
 ![](/range-tagger.jpg "range-tagger screenshot")
 
-I won't delve too much into how it works here, but you can check out a demo/how-to video at [this link](https://youtu.be/sZvp8YXCoto).
+I won't delve too much into how it works here, but you can check out a demo/how-to video at [this link](https://youtu.be/sZvp8YXCoto), and you can find the source code on github [here](https://github.com/jswilson/range-tagger).
 
 ## Technical Design Decisions
 There were a few big technical decisions that shaped how range-tagger works; I thought it would be useful to document the motivations behind them.
