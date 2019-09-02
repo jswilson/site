@@ -26,7 +26,7 @@
       <pubDate>Thu, 22 Aug 2019 11:41:13 -0400</pubDate>
       
       <guid>https://www.jswilson.co/posts/release-of-range-tagger/</guid>
-      <description>tl;dr: range-tagger is an application to help manually label segments of long videos to create training datasets for use in machine learning. You can find the source here, you can download it here (OSX only for now), and you can watch a demo video here
+      <description>tl;dr: range-tagger is an application to help manually label segments of long videos to create training datasets for use in machine learning. You can find the source here, you can download it here (OSX only for now), and you can watch a demo video here.
 Motivation I was recently working on a machine learning project that required classifying every frame in a set of 4-hour videos. To simplify describing the project, you can think of it like trying to classify television broadcast footage into “commercial” and “show” labels; we want to accurately label every frame in a broadcast as being an advertisement or part of the actual television show.</description>
     </item>
     
