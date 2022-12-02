@@ -4,8 +4,6 @@ date: 2022-12-01T11:41:13-04:00
 draft: false
 ---
 
-# Motivation
-
 If you're using selenium webdriver at any sort of scale, you'll eventually see some pretty weird stuff.
 
 I'm currently doing a large web crawl project using selenium, and about a day into the crawl, all of my instances suddenly crashed with `selenium.common.exceptions.InvalidSessionIdException: Message: invalid session id`.
